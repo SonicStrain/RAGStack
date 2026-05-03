@@ -40,7 +40,7 @@ User Query → [L0 Optimizer] → [L1 Cache] → [L2 Rewriter] → [L3 Retriever
 ### Step 1 — Install RAGStack
 
 ```bash
-git clone <repo>
+git clone -b main https://github.com/SonicStrain/RAGStack.git
 cd ragstack
 python install.py
 ```
