@@ -241,9 +241,9 @@ PromptCacheBackend      ←──     AnthropicPromptCacheBackend
 flowchart LR
     CFG["ragstack.config.yaml\nllm.provider: X"] --> PL["pipeline.py\nfrom_config()"]
     PL -->|anthropic| A["_AnthropicAdapter\n.chat(model, messages, system, max_tokens)"]
-    PL -->|openai|    B["_OpenAIAdapter\n.chat(...)"]
-    PL -->|gemini|    C["_GeminiAdapter\n.chat(...)"]
-    PL -->|ollama|    D["_OllamaAdapter\n.chat(...)"]
+    PL -->|openai| B["_OpenAIAdapter\n.chat(...)"]
+    PL -->|gemini| C["_GeminiAdapter\n.chat(...)"]
+    PL -->|ollama| D["_OllamaAdapter\n.chat(...)"]
 ```
 
 All adapters expose the same `.chat()` interface. The pipeline never imports a provider SDK at module level — each adapter does a lazy `import` inside `_get()`.
