@@ -1,0 +1,34 @@
+# RAGStack — Python dependencies
+# ════════════════════════════════════════════════════════════════════════════
+# Core (required — installed automatically by install.py)
+# ════════════════════════════════════════════════════════════════════════════
+mcp[cli]>=1.0          # MCP server framework (Claude Code integration)
+anthropic>=0.40.0      # Anthropic SDK (default LLM + prompt caching)
+pyyaml>=6.0            # Config file parsing
+numpy>=1.24            # Cosine similarity in memory cache
+gradio>=4.0            # Web GUI (ragstack/gui.py)
+pandas>=2.0            # Required by Gradio 6 (1.x incompatible with numpy 2.x)
+matplotlib>=3.9        # Required by Gradio 6 internals (older versions crash on numpy 2.x)
+
+# ════════════════════════════════════════════════════════════════════════════
+# Optional — uncomment the backends you want to use
+# Or run:  python install.py --extras redis reranker chroma
+# ════════════════════════════════════════════════════════════════════════════
+
+# ── LLM providers ────────────────────────────────────────────────────────────
+openai>=1.0            # Embeddings (text-embedding-3-small) + optional LLM
+# google-generativeai>=0.5  # llm.provider: gemini
+# ollama>=0.2               # llm.provider: ollama  (local models)
+
+# ── Cache backends ────────────────────────────────────────────────────────────
+# redis[hiredis]>=5.0      # cache.backend: redis
+# qdrant-client>=1.7       # cache.backend: qdrant
+
+# ── Retriever backends ────────────────────────────────────────────────────────
+# chromadb>=0.4            # retriever.backend: chroma
+# pinecone-client>=3.0     # retriever.backend: pinecone
+# weaviate-client>=4.0     # retriever.backend: weaviate
+
+# ── Compressor backends ───────────────────────────────────────────────────────
+# sentence-transformers>=2.0   # compressor.backend: reranker
+# llmlingua>=0.2               # compressor.backend: llmlingua
