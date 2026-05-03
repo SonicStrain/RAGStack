@@ -1,0 +1,106 @@
+llm:
+  provider: ollama
+  model: llama3.2
+  max_tokens: 1024
+  ollama:
+    base_url: http://localhost:11434
+layers:
+  optimizer:
+    enabled: true
+    backend: rules
+    report_savings: true
+    llm:
+      model: claude-haiku-4-5-20251001
+      max_tokens: 512
+  cache:
+    enabled: true
+    backend: memory
+    similarity_threshold: 0.92
+    ttl_seconds: 3600
+    redis:
+      url: redis://localhost:6379
+      index_name: ragstack_cache
+    qdrant:
+      url: http://localhost:6333
+      collection: ragstack_cache
+  rewriter:
+    enabled: true
+    backend: llm
+    strategy: expand
+    hyde:
+      model: llama3.2
+  retriever:
+    enabled: true
+    backend: graphify
+    top_k: 8
+    graphify:
+      graph_path: ./graphify-out/graph.json
+      report_path: ./graphify-out/GRAPH_REPORT.md
+      hop_limit: 3
+      edge_types:
+      - calls
+      - depends_on
+      - semantically_similar_to
+      - rationale_for
+    chroma:
+      host: localhost
+      port: 8000
+      collection: ragstack_docs
+    pinecone:
+      index_name: ragstack-index
+      environment: us-east-1
+    weaviate:
+      url: http://localhost:8080
+      class_name: Document
+    memory:
+      docs:
+      - text: 'The authentication flow begins when a user submits credentials. The
+          AuthController receives the request and delegates to AuthService. AuthService
+          calls TokenValidator.validate() which checks the JWT signature and expiry.
+          On success, a session token is issued and stored in Redis.
+
+          '
+        source: auth/auth_service.py
+      - text: 'TokenValidator is called by AuthService.authenticate() and by the middleware
+          layer on every protected route. It imports jwt and uses the RS256 public
+          key from config. Validation failures raise AuthenticationError which the
+          error handler converts to HTTP 401.
+
+          '
+        source: auth/token_validator.py
+      - text: 'The API gateway routes all /api/* requests through the auth middleware
+          before forwarding to downstream services. The middleware extracts the Bearer
+          token from the Authorization header and passes it to TokenValidator. Rate
+          limiting is applied after successful authentication.
+
+          '
+        source: gateway/middleware.py
+      - text: 'Session tokens are 256-bit random values stored in Redis with a 24-hour
+          TTL. The SessionStore class handles creation, lookup, and invalidation.
+          Tokens are hashed (SHA-256) before storage so raw tokens never touch disk.
+
+          '
+        source: auth/session_store.py
+  compressor:
+    enabled: true
+    backend: passthrough
+    top_k: 3
+    reranker:
+      model: cross-encoder/ms-marco-MiniLM-L-6-v2
+      score_threshold: 0.3
+    llmlingua:
+      ratio: 0.4
+      model: microsoft/llmlingua-2-bert-base-multilingual-cased-meetingbank
+  prompt_cache:
+    enabled: true
+    backend: none
+    cached_prefix: 'You are a precise technical assistant. Answer only from the provided
+
+      context. If the context does not contain enough information, say so.
+
+      Cite the source file or node name for every claim you make.
+
+      '
+embeddings:
+  model: text-embedding-3-small
+  dimensions: 1536
