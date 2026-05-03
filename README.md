@@ -41,7 +41,7 @@ User Query → [L0 Optimizer] → [L1 Cache] → [L2 Rewriter] → [L3 Retriever
 
 ```bash
 git clone <repo>
-cd converter
+cd ragstack
 python install.py
 ```
 
